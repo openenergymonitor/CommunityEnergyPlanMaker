@@ -106,7 +106,7 @@
    function explore_savings(group_data_in)
    {
 
-       var group_data =   eval(JSON.stringify(group_data_in));
+     var group_data =   eval(JSON.stringify(group_data_in));
   for (i in group_data)
   {
 

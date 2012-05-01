@@ -10,6 +10,8 @@
 
      function vis_feed_data(apikey,feedid,start,end,res)
      {
+       var type = 0;
+       if(typeof(whw) !== 'undefined' && feedid == whw) type = 1
 
        $('#loading').show();
        $.ajax({                                       //Using JQuery and AJAX
@@ -47,7 +49,9 @@
            graph_data = [];   
            graph_data = data;
       
-           plotGraph(start, end);
+           if (type == 0) plotGraph(start, end);
+           if (type == 1) plotHistogram(start, end);
+
            //on_inst_graph_load();
            $("#loading").hide();
          } 
@@ -71,7 +75,23 @@
      } ); 
      }
 
-        function inst_zoomout()
+     function plotHistogram(start, end)
+     {
+    	  barwidth = 50;
+          $.plot(placeholder,[                    
+          {
+            color: "#0096ff",
+            data: graph_data ,				//data
+            //lines: { show: true, fill: true }		//style
+            bars: { show: true,align: "center",barWidth: barwidth,fill: true }
+          }], {
+        xaxis: { mode: null },
+        grid: { show: true, hoverable: true, clickable: true },
+        selection: { mode: "xy" }
+     } ); 
+     }
+
+     function inst_zoomout()
         {
           var time_window = end - start;
           var middle = start + time_window / 2;

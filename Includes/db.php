@@ -42,12 +42,16 @@
 
   function db_query($query)
   {
-    return $GLOBALS['mysqli']->query($query);
+    $ret = $GLOBALS['mysqli']->query($query);
+    if ($ret == false) {echo $GLOBALS['mysqli']->error;}
+    return $ret;
   }
 
   function db_fetch_array($result)
   {
-    return $result->fetch_array();
+  	$ret = $result->fetch_array();
+    if ($ret == false) {echo $GLOBALS['mysqli']->error;}
+    return $ret;
   }
 
   function db_num_rows($result)
@@ -64,6 +68,34 @@
   {
     return $GLOBALS['mysqli']->insert_id;
   }
+
+  function table_exists($tablename)
+  {
+    $result = db_query("SELECT DATABASE()");
+    $row = db_fetch_array($result);
+    $database = $row[0];
+
+    $result = db_query("
+        SELECT COUNT(*) AS count 
+        FROM information_schema.tables 
+        WHERE table_schema = '$database' 
+        AND table_name = '$tablename'
+    ");
+
+    $row = db_fetch_array($result);
+    return $row[0];
+  }
+
+  function field_exists($tablename,$field)
+  {
+    $field_exists = 0;
+    $result = db_query("SHOW COLUMNS FROM $tablename");
+    while( $row = db_fetch_array($result) ){
+      if ($row['Field']==$field) $field_exists = 1;
+    }
+    return $field_exists;
+  }
+
 
 
 ?>

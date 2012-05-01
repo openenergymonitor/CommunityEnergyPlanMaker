@@ -56,11 +56,11 @@ function process_stacks(group_data){
     {
       var s = stack[key];
       // Get values for greenred stack
-      if (i != 0 && i != 1){ 
-        if (s['color']==0 || s['color']==2) group_fossil+= s['kwhd'];
-        if (s['color']==1 || s['color']==3) group_sustainable+= s['kwhd'];
-        if (s['color']==7) group_saving+= s['kwhd'];
-      }
+  
+      if (s['color']==0 || s['color']==2) group_fossil+= s['kwhd'];
+      if (s['color']==1 || s['color']==3) group_sustainable+= s['kwhd'];
+      if (s['color']==7) group_saving+= s['kwhd'];
+ 
 
       if (s['color']==0 || s['color']==2) red += s['kwhd'];
       if (s['color']==1 || s['color']==3) green += s['kwhd'];
@@ -85,7 +85,7 @@ function process_stacks(group_data){
 
     stacks_breakdown[nhouse] = {"name":group_data[i]['name'],"stack":stack,"height":total};	// Add user Stack
    
-    if (i == 0 || i == 1) {stacks_group[ig] = {"name":group_data[i]['name'],"stack":stack,"height":total}; ig++;}	// Add user Stack
+    //if (i==0) stacks_group[ig] = {"name":group_data[i]['name'],"stack":stack,"height":total}; ig++;	// Add user Stack
 
     //-------------------------------------------------------------------------------
     // Generate greenred stack
@@ -119,10 +119,10 @@ function process_stacks(group_data){
   //------------------------------------------------------------------------------------
   var group_stats = {'sustainable':group_sustainable, 'fossil':group_fossil, 'wood':group_wood,'elec':group_electricity};
   var stack = [];
-  stack[0] = add_block(		"Sustainable"	,group_sustainable/(nhouse-2),1	,0	);
-  stack[1] = add_block(		"Fossil"	,group_fossil/(nhouse-2),0	,0	);
-  stack[2] = add_block(		"Saving"	,group_saving/(nhouse-2),7	,4	);
-  stacks_group[ig] = {"name":"Group","stack":stack,"height":(group_sustainable+group_fossil)/(nhouse-2)};
+  stack[0] = add_block(		"Sustainable"	,group_sustainable/(nhouse),1	,0	);
+  stack[1] = add_block(		"Fossil"	,group_fossil/(nhouse),0	,0	);
+  stack[2] = add_block(		"Saving"	,group_saving/(nhouse),7	,4	);
+  stacks_group[ig] = {"name":"Group","stack":stack,"height":(group_sustainable+group_fossil)/(nhouse)};
 
   return {'breakdown':stacks_breakdown,'greenred':stacks_greenred,'types':stacks_types,'heat':stacks_heat,'group_stats':group_stats,'stacks_group':stacks_group};
 }
