@@ -16,7 +16,6 @@
       <li><a href='../energyaudit/electric'>Electric</a></li>
       <li><a href='../energyaudit/heating'>Heating</a></li>
       <li><a href='../energyaudit/transport'>Transport</a></li>
-      <li><a href='../energyaudit/context'>Context</a></li>
     </ul>
     <div style='clear:both;'></div>
   </div>

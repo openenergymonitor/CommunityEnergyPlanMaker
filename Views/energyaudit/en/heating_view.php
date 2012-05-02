@@ -13,47 +13,43 @@
 <h2>Heating (non-electric)</h2>
 
 <table>
-<tr><th width="200px">Fuel Type</th><th>Annual Consumption</th></tr>
+<tr><th width="200px">Fuel Type</th><th width="200px" >Annual Consumption</th><th>System efficiency</th></tr>
 <tr>
 <!-- The question id's for the wood question are out of order -->
 <td>Wood</td>
 <td><?php echo form_input_text($data,'wood_m3',100); ?>&nbsp;m3</td>
+<td><?php echo form_input_text($data,'wood_eff',100); ?>&nbsp;%</td>
 </tr>
 <tr>
 <!-- The question id's for the wood question are out of order -->
 <td>Wood pellet</td>
 <td><?php echo form_input_text($data,'woodpellet_m3',100); ?>&nbsp;tonnes</td>
+<td><?php echo form_input_text($data,'woodpellet_eff',100); ?>&nbsp;%</td>
 </tr>
 
 <tr>
 <td>Heating Oil</td>
 <td><?php echo form_input_text($data,'oil_L',100); ?>&nbsp;litres</td>
+<td><?php echo form_input_text($data,'oil_eff',100); ?>&nbsp;%</td>
 </tr>
 <tr>
 <td>Mains/Bulk Gas</td>
 <td><?php echo form_input_text($data,'mainsgas_m3',100); ?>&nbsp;m3</td>
+<td><?php echo form_input_text($data,'mainsgas_eff',100); ?>&nbsp;%</td>
 </tr>
 <tr>
 <td>Bulk LPG</td>
 <td><?php echo form_input_text($data,'lpg_L',100); ?>&nbsp;litres</td>
+<td><?php echo form_input_text($data,'lpg_eff',100); ?>&nbsp;%</td>
 </tr>
 <tr>
 <td>Propane or Butane</td>
 <td><?php echo form_input_text($data,'botgas_kg',100); ?>&nbsp;kg</td>
+<td><?php echo form_input_text($data,'botgas_eff',100); ?>&nbsp;%</td>
 </tr>
 <tr>
 <td>Coal</td>
 <td><?php echo form_input_text($data,'coal_kg',100); ?>&nbsp;kg</td>
+<td><?php echo form_input_text($data,'coal_eff',100); ?>&nbsp;%</td>
 </tr>
 </table>
-
-<table>
-<tr>
-<td >How much of the above is business use?</td>
-<td width="200px"><?php echo form_input_text($data,'business_heat',100); ?>&nbsp;%</td>
-</tr>
-</table>
-<div class='button05' style="line-height:30px; width:160px;"><a href="../energyaudit/hcon">2. Heating context ></a></div>
-
-
-

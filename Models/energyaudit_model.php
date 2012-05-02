@@ -66,6 +66,7 @@
     $data_energy['elec_tot'] = $data['elec_tot'];
     $data_energy['eheat_tot'] = $data['eheat_tot'];
     $data_energy['hp_tot'] = $data['hp_tot'];
+    $data_energy['hp_cop'] = $data['hp_cop'];
 
     $data_energy["wood_m3"] = $data["wood_m3"];
     $data_energy["woodpellet_m3"] = $data["woodpellet_m3"];

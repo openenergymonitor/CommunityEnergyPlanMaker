@@ -139,6 +139,11 @@ function generate_stack(data)
   stack[0] = add_block(		"Electric"	,get_kwhd(data["elec_tot"]	,1	,100)	,green_elec	,0	);
   stack[1] = add_block(		"Storage"	,get_kwhd(data["eheat_tot"]	,1	,100)	,green_elec	,1	);
   stack[2] = add_block(		"Heatpump"	,get_kwhd(data["hp_tot"]	,1	,100)	,green_elec	,1	);
+  if (data["hp_tot"]) 
+  {
+    stack[3] = add_block(	"Ambient"	,get_kwhd(data["hp_tot"],1,data["hp_cop"]*100)-get_kwhd(data["hp_tot"],1,100)	,1	,1	);
+  }
+
   //stack[3] = add_block(	"Solar"		,get_kwhd(data["spv_tot"]	,1	,1)	,1	,3	);
   //stack[4] = add_block(	"Hydro"		,get_kwhd(data["hydro_tot"]	,1	,1)	,1	,3	);
   //stack[5] = add_block(	"Wind"		,get_kwhd(data["wind_tot"]	,1	,1)	,1	,3	);
@@ -146,9 +151,9 @@ function generate_stack(data)
   stack[6] = add_block(		"Wood"		,get_kwhd(data["wood_m3"]	,1380	,data["wood_eff"]	)	,1	,1	);
   stack[7] = add_block(		"Wood"		,get_kwhd(data["woodpellet_m3"]	,4800	,data["woodpellet_eff"]	)	,1	,1	);
   stack[8] = add_block(		"Oil"		,get_kwhd(data["oil_L"]		,10.27	,data["oil_eff"]	)	,0	,1	);
-  stack[9] = add_block(		"Gas"		,get_kwhd(data["mainsgas_m3"]	,9.8	,data["gas_eff"]	)	,0	,1	);
-  stack[10] = add_block(	"Gas"		,get_kwhd(data["lpg_L"]		,11.00	,data["gas_eff"]	)	,0	,1	);
-  stack[11] = add_block(	"Gas"		,get_kwhd(data["botgas_kg"]	,13.9	,data["gas_eff"]	)	,0	,1	);
+  stack[9] = add_block(		"Gas"		,get_kwhd(data["mainsgas_m3"]	,9.8	,data["mainsgas_eff"]	)	,0	,1	);
+  stack[10] = add_block(	"Gas"		,get_kwhd(data["lpg_L"]		,11.00	,data["lpg_eff"]	)	,0	,1	);
+  stack[11] = add_block(	"Gas"		,get_kwhd(data["botgas_kg"]	,13.9	,data["botgas_eff"]	)	,0	,1	);
   stack[12] = add_block(	"Coal"		,get_kwhd(data["coal_kg"]	,6.67	,data["coal_eff"]	)	,0	,1	);
 
   stack[13] = add_block(	"E Car"		,get_kwhd(data["ecar_miles"]	,0.25	,100)	,green_elec	,2	);

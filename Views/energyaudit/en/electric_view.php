@@ -48,8 +48,6 @@
 <table>
 <tr><td>Do you buy 100% Green Electricity?</td><td>
 <?php echo form_input_select($data,"green_elec"," |yes|no"); ?></td></tr>
-<tr><td>If yes which supplier and tariff do you use?</td><td><?php echo form_input_text($data,'supplier',150); ?></td></tr>
-<tr><td>How much of electricity consumption is business use?</td><td><?php echo form_input_text($data,'business_elec',100); ?>&nbsp;%</td></td></tr>
 </table>
 
 
