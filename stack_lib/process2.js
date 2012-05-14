@@ -1,3 +1,28 @@
+/*
+
+This script converts the user entered form data into processed energy data that can then be used for the energy stack visualisations and other energy data analysis.
+
+What is processed energy data?
+-------------------------------
+
+We use energy for a lot of different things, and often have specific fuels for these things. A users energy data is a list of these uses or fuels such as electricity, oil, gas, wood, a car.
+
+Each of these energy items has several properties:
+- how much of the item that is used: quantity
+- the efficiency at which the item is used
+- if we measure quantity in the given items units such as m3 of wood or Litres of oil then another property that is important is the conversion to kwh's
+- We also store unit cost property for financial conversion
+- Whether the energy item is renewable or not
+- and the type of energy item it is: electric/transport/heating
+
+Here is how the energy item object is constructed:
+
+energydata[id] = {'name':dname,'quantity':1*quantity,'eff':eff,'kwh':kwh,'unitcost':unitcost,'color':color,'type':type};
+
+the values are entered via the function add_energy_use below.
+
+*/
+
 var energydata = {};
 
 function getUserEnergyData(data)
@@ -49,18 +74,17 @@ function getUserEnergyData(data)
   return energydata;
 }
 
-  function add_energy_use(id, dname, quantity, eff, kwh, annualcost, unitcost, color, type)
-  {
+function add_energy_use(id, dname, quantity, eff, kwh, annualcost, unitcost, color, type)
+{
+  if (annualcost && quantity) unitcost = annualcost / quantity;
+  if (!quantity) quantity = annualcost / unitcost;
 
-    if (annualcost && quantity) unitcost = annualcost / quantity;
-    if (!quantity) quantity = annualcost / unitcost;
+  annualcost = annualcost || 0;
+  quantity = quantity || 0;
+  eff = eff || 100;
 
-    annualcost = annualcost || 0;
-    quantity = quantity || 0;
-    eff = eff || 100;
-
-    energydata[id] = {'name':dname,'quantity':1*quantity,'eff':eff,'kwh':kwh,'unitcost':unitcost,'color':color,'type':type};
-  }
+  energydata[id] = {'name':dname,'quantity':1*quantity,'eff':eff,'kwh':kwh,'unitcost':unitcost,'color':color,'type':type};
+}
 
 function getkwh(edata)
 {
@@ -99,13 +123,13 @@ function get10yCost(edata)
   return cost;
 }
 
-  function get_percentage_sustainability(edata)
-  {
-    var fossil = 0, green = 0;
-    for (z in edata) {
-      if (edata[z]['color']==0 || edata[z]['color']==2) fossil += getkwh(edata[z]);
-      if (edata[z]['color']==1 || edata[z]['color']==3) green += getkwh(edata[z]);
-    }
-    return parseInt(100*green / (green+fossil));
+function get_percentage_sustainability(edata)
+{
+  var fossil = 0, green = 0;
+  for (z in edata) {
+    if (edata[z]['color']==0 || edata[z]['color']==2) fossil += getkwh(edata[z]);
+    if (edata[z]['color']==1 || edata[z]['color']==3) green += getkwh(edata[z]);
   }
+  return parseInt(100*green / (green+fossil));
+}
 
