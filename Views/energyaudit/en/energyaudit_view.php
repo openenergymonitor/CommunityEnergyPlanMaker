@@ -13,9 +13,9 @@
 
   <div class='top_menu2'>
     <ul>
-      <li><a href='../energyaudit/electric'>Electric</a></li>
-      <li><a href='../energyaudit/heating'>Heating</a></li>
-      <li><a href='../energyaudit/transport'>Transport</a></li>
+      <li><a href='../energyaudit/electric?lang=en'>Electric</a></li>
+      <li><a href='../energyaudit/heating?lang=en'>Heating</a></li>
+      <li><a href='../energyaudit/transport?lang=en'>Transport</a></li>
     </ul>
     <div style='clear:both;'></div>
   </div>

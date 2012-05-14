@@ -9,7 +9,7 @@
 ---------------------------------------------------------------------------------->
 <div style="margin: 0px auto; max-width: 990px; text-align:left; margin-top:20px;">
 
-<div class='widget-container' style="width:590px; min-height:550px; margin-bottom: 20px; float:left;">
+<div class='widget-container' style="width:590px; height:580px; margin-bottom: 20px; float:left;">
 <br/><br/><br/>
 <h2>Energy group</h2>
 <p><b>Note: </b>This page is still under construction, the plan is to extend it with several different options for exploring different sustainable energy pathways. Including financial aspects.</p>
@@ -29,7 +29,8 @@
 
 </div>
 
-<div class='widget-container' style="width:300px; height:550px; margin-left: 15px; float:left;">
+<div class='widget-container' style="width:300px; height:580px; margin-left: 15px; float:left;">
+<h2>Energy Stack</h2>
 <canvas id="groupstacks" width="290px;" height="500"></canvas> 
 </div>
 
@@ -38,19 +39,7 @@
 <div id="cancon" style="margin: 0px auto; width:1440px; text-align:left;">
 <div class="widget-container" style="margin:0;">
    <h2>Individual Contributions</h2>
-   Sort by: 
-
-   <input id="comparison1" type="button" value="GreenRed" />
-   <input id="comparison2" type="button" value="Breakdown" />
-   <input id="comparison3" type="button" value="Types" />
-   <input id="comparison4" type="button" value="Heat" /><br/>
-<!--
-   Order by: 
-   <input class="order" type="button" value="0" />
-   <input class="order" type="button" value="1" />
-   <input class="order" type="button" value="2" />-->
-
-
+ 
 <canvas id="can" width="1400px" height="600"></canvas> 
 
 <p>Our current overall position is made up of every one of our individual situations. Each block on the graph above relates to a big chunk of

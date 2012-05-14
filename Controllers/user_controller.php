@@ -12,7 +12,6 @@
 
     login?name=john&pass=test		all
     create?name=john&pass=test		all
-    changepass?old=sdgs43&new=sdsg345   write
     newapiread				write
     newapiwrite				write
     logout				read
@@ -21,9 +20,12 @@
     view				write
 
   */
+  // no direct access
+  defined('EMONCMS_EXEC') or die('Restricted access');
+
   function user_controller()
   {
-    global $session, $action,$format;
+    global $action,$format,$lang,$session;
 
     $output['content'] = "";
     $output['message'] = "";
@@ -34,14 +36,14 @@
     //---------------------------------------------------------------------------------------------------------
     if ($action == 'login')
     {
-      $username = preg_replace('/[^\w\s-.]/','',$_GET["name"]);	// filter out all except for alphanumeric white space and dash
+      $username = preg_replace('/[^\w\s-.@]/','',$_POST["name"]);	// filter out all except for alphanumeric white space and dash
       $username = db_real_escape_string($username);
 
-      $password = db_real_escape_string($_GET['pass']);
+      $password = db_real_escape_string($_POST['pass']);
       $result = user_logon($username,$password);
-      if ($result == 0) $output['message'] = "Invalid username or password"; else { $output['message'] = "Welcome, you are now logged in";
+      if ($result == 0) $output['message'] = "Invalid username or password"; else {$output['message'] = "Welcome, you are now logged in";
 
-      if ($format == 'html') header("Location: ../dashboard/view");}
+      if ($format == 'html') header("Location: ../energyaudit/electric");}
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -51,10 +53,10 @@
     //---------------------------------------------------------------------------------------------------------
     if ($action == 'create')
     {
-      $username = preg_replace('/[^\w\s-.]/','',$_GET["name"]);	// filter out all except for alphanumeric white space and dash
+      $username = preg_replace('/[^\w\s-.@]/','',$_POST["name"]);	// filter out all except for alphanumeric white space and dash
       $username = db_real_escape_string($username);
 
-      $password = db_real_escape_string($_GET['pass']);
+      $password = db_real_escape_string($_POST['pass']);
 
       if (get_user_id($username)!=0) $output['message'] = "Sorry username already exists";
       if (strlen($password) < 4 || strlen($password) > 30) $output['message'] = "Please enter a password that is 4 to 30 characters long<br/>";
@@ -63,41 +65,34 @@
         create_user($username,$password);
         $result = user_logon($username,$password);
         $output['message'] = "Your new account has been created";
-        if ($format == 'html') header("Location: ../dashboard/view");
-
+        if ($format == 'html') header("Location: ../energyaudit/electric");
         if ($_SESSION['write']) create_user_statistics($_SESSION['userid']);
       }
     }
 
+    //---------------------------------------------------------------------------------------------------------
+    // Forgot password
+    // http://yoursite/emoncms/user/forgotpass?email=test@test.org
+    //---------------------------------------------------------------------------------------------------------
+    if ($action == 'loginview') {
+      if ($format == 'html' && $lang == "en") $output['content'] = view("user/login_block.php", array());
+    }
+
+    if ($action == 'forgotpass') {
+      if ($format == 'html' && $lang == "en") $output['content'] = view("user/reset_password.php", array());
+    }
+
+    if ($action == 'resetpass') {
+      $email = preg_replace('/[^\w\s-.@]/','',$_GET["email"]);		// validate entry
+      if (get_user_id($email)!=0) forgot_password($email);
+      //if ($format == 'html') header("Location: ../");
+    }
+
     // http://yoursite/emoncms/user/changepass?old=sdgs43&new=sdsg345
-    if ($action == 'changepass' && $_SESSION['write']) {
-      $oldpass =  db_real_escape_string($_GET['oldpass']);
-      $newpass =  db_real_escape_string($_GET['newpass']);
-      if (change_password($_SESSION['userid'],$oldpass,$newpass)) $output['message'] = "Your password has been changed"; else $output['message'] = "Invalid old password";
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-    // NEW API READ
-    // http://yoursite/emoncms/user/newapiread
-    //---------------------------------------------------------------------------------------------------------
-    if ($action == 'newapiread' && $session['write']) {
-      $apikey_read = md5(uniqid(mt_rand(), true));
-      set_apikey_read($session['userid'],$apikey_read);
-      $output['message'] = "New read apikey: ".$apikey_read;
-
-      if ($format == 'html') header("Location: view");
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-    // NEW API WRITE
-    // http://yoursite/emoncms/user/newapiwrite
-    //---------------------------------------------------------------------------------------------------------
-    if ($action == 'newapiwrite' && $session['write']) {
-      $apikey_write = md5(uniqid(mt_rand(), true));
-      set_apikey_write($session['userid'],$apikey_write);
-      $output['message'] = "New write apikey: ".$apikey_write;
-
-      if ($format == 'html') header("Location: view");
+    if ($action == 'changepass' && $session['write']) {
+      $oldpass =  db_real_escape_string($_POST['oldpass']);
+      $newpass =  db_real_escape_string($_POST['newpass']);
+      if (change_password($_session['userid'],$oldpass,$newpass)) $output['message'] = "Your password has been changed"; else $output['message'] = "Invalid old password";
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -106,28 +101,15 @@
     //---------------------------------------------------------------------------------------------------------
     if ($action == 'logout' && $session['read'])
     { 
-      user_logout(); 
-      $output['message'] = "You are logged out"; 
+        if ($_POST['CSRF_token'] == $_SESSION['CSRF_token']) {
+            user_logout();
+            $output['message'] = "You are logged out";
+        } else {
+            reset_CSRF_token();
+            $output['message'] = "Invalid token";
+        }
 
-      if ($format == 'html') header("Location: ../");
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-    // GET API READ
-    // http://yoursite/emoncms/user/getapiread
-    //---------------------------------------------------------------------------------------------------------
-    if ($action == 'getapiread' && $session['read']) {
-      $apikey_read = get_apikey_read($session['userid']);
-      $output = $apikey_read;
-    }
-
-    //---------------------------------------------------------------------------------------------------------
-    // GET API WRITE
-    // http://yoursite/emoncms/user/getapiwrite
-    //---------------------------------------------------------------------------------------------------------
-    if ($action == 'getapiwrite' && $session['write']) {
-      $apikey_write = get_apikey_write($session['userid']);
-      $output = $apikey_write;
+       if ($format == 'html') header("Location: ../");
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -136,10 +118,9 @@
     //---------------------------------------------------------------------------------------------------------
     if ($action == 'view' && $session['write']) {
       $user = get_user($session['userid']);
-      $stats = get_statistics($session['userid']);
 
       if ($format == 'json') $output['content'] = json_encode($user);
-      if ($format == 'html') $output['content'] = view("user_view.php", array('user' => $user, 'stats'=>$stats));
+      if ($format == 'html' && $lang == "en") $output['content'] = view("user/user_view.php", array('user' => $user));
     }
 
     return $output;

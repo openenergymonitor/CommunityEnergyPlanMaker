@@ -16,6 +16,7 @@
   //=====================================================
   //$runnable = TRUE; // ENABLE THIS ONCE TO FORCE UPDATE
   //=====================================================
+  define('EMONCMS_EXEC', 1);
 
   require "Includes/db.php";
   $e = db_connect();
@@ -47,6 +48,11 @@
     'userid'=> array('type'=>'INT NOT NULL'),
     'key'=> array('type'=>'text'),
     'value'=> array('type'=>'text')
+  );
+
+  $schema['energydata'] = array(
+    'userid'=> array('type'=>'INT NOT NULL'),
+    'data'=> array('type'=>'TEXT NOT NULL')
   );
 
   $out = "<table style='font-size:12px'><tr><th width='220'></th><th></th></tr>";

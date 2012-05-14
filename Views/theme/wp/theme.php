@@ -38,7 +38,7 @@
       ------------------------------------------------------->
       <div class="header">
 		  <ul id="top-menu">
-			  <li><a style="padding:0" href='<?php echo $GLOBALS['path']; ?>dashboard/view'><img id="emoncms-logo" src="<?php print $GLOBALS['path']; ?>Views/theme/wp/emoncms logo.png" /></a></li>
+			  <li><a style="padding:0" href='<?php echo $GLOBALS['path']; ?>energyaudit/electric'><img id="emoncms-logo" src="<?php print $GLOBALS['path']; ?>Views/theme/wp/emoncms logo.png" /></a></li>
 			  <?php print $menu; ?>
 		  </ul>
 		  <div><?php echo $user; ?></div>

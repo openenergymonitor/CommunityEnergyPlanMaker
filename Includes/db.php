@@ -1,4 +1,4 @@
-<?php 
+<?php
   $mysqli = 0;
 
   /*
@@ -10,6 +10,9 @@
     Part of the OpenEnergyMonitor project:
     http://openenergymonitor.org
   */
+
+  // no direct access
+defined('EMONCMS_EXEC') or die('Restricted access');
 
   function db_connect()
   {
@@ -49,7 +52,7 @@
 
   function db_fetch_array($result)
   {
-  	$ret = $result->fetch_array();
+    $ret = $result->fetch_array();
     if ($ret == false) {echo $GLOBALS['mysqli']->error;}
     return $ret;
   }

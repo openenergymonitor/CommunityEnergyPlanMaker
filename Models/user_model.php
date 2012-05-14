@@ -8,6 +8,8 @@
     Part of the OpenEnergyMonitor project:
     http://openenergymonitor.org
   */
+  // no direct access
+  defined('EMONCMS_EXEC') or die('Restricted access');
 
   function user_apikey_session_control($apikey_in)
   {
@@ -39,6 +41,7 @@
     //----------------------------------------------------
     return $session;
   }
+
 
 
   function get_user($userid)
@@ -101,26 +104,27 @@
   function create_user($username,$password)
   {
     $hash = hash('sha256', $password);
-    $string = md5(uniqid(mt_rand(), true));
+    $string = md5(uniqid(rand(), true));
     $salt = substr($string, 0, 3);
     $hash = hash('sha256', $salt . $hash);
 
-    $apikey_write = md5(uniqid(mt_rand(), true));
-    $apikey_read = md5(uniqid(mt_rand(), true));
+    $apikey_write = md5(uniqid(rand(), true));
+    $apikey_read = md5(uniqid(rand(), true));
 
     db_query("INSERT INTO users ( username, password, salt ,apikey_read, apikey_write ) VALUES ( '$username' , '$hash' , '$salt', '$apikey_read', '$apikey_write' );"); 
   }
 
   function user_logon($username,$password)  
   {
-    $result = db_query("SELECT id,password,admin, salt FROM users WHERE username = '$username'");
+    $result = db_query("SELECT id,password,salt,admin FROM users WHERE username = '$username'");
     $userData = db_fetch_array($result);
     $hash = hash('sha256', $userData['salt'] . hash('sha256', $password) );
-    
+
     if ((db_num_rows($result) < 1) || ($hash != $userData['password']))
     {
       $_SESSION['read'] = 0;
       $_SESSION['write'] = 0;
+      $_SESSION['admin'] = 0;
       $success = 0;
     }
     else
@@ -133,6 +137,7 @@
       $_SESSION['admin'] = $userData['admin'];
       $success = 1;
     }
+
     return $success;
   }
 
@@ -144,18 +149,48 @@
     session_destroy();
   }
 
-  function get_user_id($username)
+  function forgot_password($email)
   {
-    $result = db_query("SELECT id FROM users WHERE username = '$username';");
-    $row = db_fetch_array($result);
-    return $row['id'];
-  }
+    $newpass = substr(md5(uniqid(rand(), true)),0,8);
 
-  function get_user_name($id)
-  {
-    $result = db_query("SELECT username FROM users WHERE id = '$id';");
-    $row = db_fetch_array($result);
-    return $row['username'];
+    $hash = hash('sha256', $newpass);
+    $string = md5(uniqid(rand(), true));
+    $salt = substr($string, 0, 3);
+    $hash = hash('sha256', $salt . $hash);
+
+    db_query("UPDATE users SET password = '$hash', salt = '$salt' WHERE username = '$email'"); 
+
+    require_once "Mail.php";
+
+    $from = "";
+    $subject = "Reset password";
+    $to = $email;
+    $body = "<p>Hello</p><p>You requested a new password. </p><p>Here it is: ".$newpass."</p><p>Login with your email address: ".$email." and the above password.</p><p>Have a nice day!</p>";
+
+    $host = "";
+    $username = "";
+    $password = "";
+ 
+    $headers = array (
+      'From' => $from,
+      'To' => $to,
+      'Subject' => $subject,
+      'MIME-Version' => "1.0",
+      'Content-type' => "text/html;charset=iso-8859-1"
+    );
+    $smtp = Mail::factory('smtp',
+      array ('host' => $host,
+      'auth' => true,
+      'username' => $username,
+      'password' => $password));
+ 
+    $mail = $smtp->send($to, $headers, $body);
+ 
+    if (PEAR::isError($mail)) {
+      echo("<p>" . $mail->getMessage() . "</p>");
+    } else {
+      echo("<p>Message successfully sent!</p>");
+    }
   }
 
   function change_password($userid,$oldpass,$newpass)
@@ -179,18 +214,29 @@
     }
   }
 
+  function get_user_id($username)
+  {
+    $result = db_query("SELECT id FROM users WHERE username = '$username';");
+    $row = db_fetch_array($result);
+    return $row['id'];
+  }
+
+  function get_user_name($id)
+  {
+    $result = db_query("SELECT username FROM users WHERE id = '$id';");
+    $row = db_fetch_array($result);
+    return $row['username'];
+  }
+
   function get_user_list()
   {
-    $result = db_query("SELECT id, username, admin FROM users");
+    $result = db_query("SELECT id,username, admin FROM users");
     $userlist = array();
     while ($row = db_fetch_array($result))
     {
       $userlist[] = array('userid'=>$row['id'],'name'=>$row['username'],'admin'=>$row['admin']);
     }
-
     return $userlist;
   }
-
-
 
 ?>

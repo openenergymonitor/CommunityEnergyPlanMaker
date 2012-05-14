@@ -1,13 +1,17 @@
-<?php
-/*
-   All Emoncms code is released under the GNU Affero General Public License.
+<!--
+   All Emoncms code is released under the GNU General Public License v3.
    See COPYRIGHT.txt and LICENSE.txt.
 
     ---------------------------------------------------------------------
     Emoncms - open source energy visualisation
     Part of the OpenEnergyMonitor project:
     http://openenergymonitor.org
-*/
+-->
+
+<?php
+  // no direct access
+  defined('EMONCMS_EXEC') or die('Restricted access');
+
   function checkbox($data,$key)
   {
     if ( $data[$key]) $out = "<input class='checksel' type='checkbox' name='".$key."' checked />";
