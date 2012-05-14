@@ -25,6 +25,7 @@ the values are entered via the function add_energy_use below.
 
 var energydata = {};
 
+// getUserEnergyData is the main energydata processing function, it is called from: Views/energyaudit/stack_view.php
 function getUserEnergyData(data)
 {
   var green_elec = 0; if (data["green_elec"] == "yes") green_elec = 1;
@@ -76,13 +77,19 @@ function getUserEnergyData(data)
 
 function add_energy_use(id, dname, quantity, eff, kwh, annualcost, unitcost, color, type)
 {
+  // One of the main things to note here is that if a user enters annual cost but no quantity
+  // the quantity is calculated from the annual cost / unit cost.
+  // If both quantity and annual cost are given then the default unit cost is overwritten
+  // with the unit cost calculated from the entered annual cost and quantity.
   if (annualcost && quantity) unitcost = annualcost / quantity;
   if (!quantity) quantity = annualcost / unitcost;
 
+  // The || symbol sets the variable to the value given (i.e 0) if it is undefined.
   annualcost = annualcost || 0;
   quantity = quantity || 0;
   eff = eff || 100;
 
+  // Add to the energydata object
   energydata[id] = {'name':dname,'quantity':1*quantity,'eff':eff,'kwh':kwh,'unitcost':unitcost,'color':color,'type':type};
 }
 
